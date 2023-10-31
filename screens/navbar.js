@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { globalStyles } from '../styles/global';
 
 const Navbar = () => {
   const navigation = useNavigation();
@@ -14,8 +15,25 @@ const Navbar = () => {
         gestureEnabled: false, // Avoid swiping back to Login
         headerBackVisible: false, // Get rid of the back button
         headerRight: () => (
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text>Logout</Text>
+          <TouchableOpacity onPress={() =>
+            Alert.alert(
+              'Disconnect',
+              'Are you sure you want to disconnect?',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Disconnect',
+                  style: 'destructive',
+                  onPress: () => navigation.navigate('Login'),
+                },
+              ],
+              { cancelable: false }
+            )
+          }>
+            <Text style={globalStyles.logOutButton}>Disconnect</Text>
           </TouchableOpacity>
         ),
       });

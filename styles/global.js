@@ -86,5 +86,10 @@ export const globalStyles = StyleSheet.create({
         paddingLeft : 10,
         paddingRight : 10,
         fontSize: 25
+    },
+    logOutButton:{
+      color: 'black',
+      marginRight: 10,
+      fontSize: 15
     }
   });

@@ -5,12 +5,15 @@ import Login from './screens/login';
 import Navbar from './screens/navbar';
 import { useFonts } from 'expo-font'; // Needed for loading custom fonts
 import * as SplashScreen from 'expo-splash-screen'  // Needed to notify the user that the app is in the process of loading.
-import { useEffect } from 'react'; // Needed to update DOM
+import { useEffect, useState } from 'react'; // Needed to update DOM
+import WebSocketService from './services/WebSocketService';
 
 const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 const App = () => {
+  const [ipAddress, setIPAddress] = useState("");
+
   const [fontsLoaded] = useFonts({  // Load custom fonts
     "Gruppo-Regular": require("./assets/fonts/Gruppo-Regular.ttf"),
     "Monoton-Regular": require("./assets/fonts/Monoton-Regular.ttf"),
@@ -46,13 +49,6 @@ const App = () => {
             headerRight: () => <Navbar />,
           }}
         />
-        {/* <Stack.Screen
-            name='SmokeChart'
-            component={SmokeChart}
-            options={{
-              headerRight: () => <Navbar />,
-            }}
-            /> */}
       </Stack.Navigator>
     </NavigationContainer>
   )
