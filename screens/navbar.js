@@ -2,10 +2,17 @@ import React, { useEffect } from 'react';
 import { TouchableOpacity, Text, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { globalStyles } from '../styles/global';
+import WebSocketService from '../services/WebSocketService';
 
 const Navbar = () => {
   const navigation = useNavigation();
   const route = useRoute();
+
+  const handleDisconnect = async () => {
+    const webSocketService = WebSocketService.getInstance();
+    webSocketService.close(); // Assuming you have a close method in your WebSocketService
+    navigation.navigate('Login');
+  };
 
   useEffect(() => {
     const { name } = route;
@@ -27,7 +34,7 @@ const Navbar = () => {
                 {
                   text: 'Disconnect',
                   style: 'destructive',
-                  onPress: () => navigation.navigate('Login'),
+                  onPress: () => handleDisconnect(),
                 },
               ],
               { cancelable: false }

@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 const App = () => {
-  const [ipAddress, setIPAddress] = useState("");
+  const [hostname, setHostname] = useState("");
 
   const [fontsLoaded] = useFonts({  // Load custom fonts
     "Gruppo-Regular": require("./assets/fonts/Gruppo-Regular.ttf"),
