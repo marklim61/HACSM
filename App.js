@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native'; // Needed for ma
 import { createNativeStackNavigator } from '@react-navigation/native-stack' // Needed for for app to transition between screens
 import Home from './screens/home';
 import Login from './screens/login';
-import Navbar from './screens/navbar';
+// import Navbar from './screens/navbar';
 import { useFonts } from 'expo-font'; // Needed for loading custom fonts
 import * as SplashScreen from 'expo-splash-screen'  // Needed to notify the user that the app is in the process of loading.
 import { useEffect, useState } from 'react'; // Needed to update DOM
@@ -46,7 +46,8 @@ const App = () => {
           name='Home'
           component={Home}
           options={{
-            headerRight: () => <Navbar />,
+            headerShown: false,
+            // headerRight: () => <Navbar />,
           }}
         />
       </Stack.Navigator>

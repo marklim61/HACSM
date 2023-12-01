@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StatusBar } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StatusBar, KeyboardAvoidingView } from "react-native";
 import { globalStyles } from "../styles/global";
 import WebSocketService from "../services/WebSocketService";
 
@@ -10,9 +10,9 @@ const DismissKeyboard = ({ children }) => ( // Needed so we can remove keyboard 
 )
 
 const Login = ({ navigation }) => {
-  // const [socket, setSocket] = useState(null); // State to hold the websocket connection object
   const [connected, setConnected] = useState(false); // State to check if the websocket connection is currently open or closed
   const [hostname, setHostname] = useState("");
+  const hostnameRef = useRef(null);
 
   useEffect(() => { // Hook is set up to run the callback function whenever conneced and socket values change
     const webSocketService = WebSocketService.getInstance();
@@ -20,6 +20,11 @@ const Login = ({ navigation }) => {
     // Add a listener for connection status changes
     const connectionStatusListener = (status) => {
       setConnected(status);
+      // Reset the hostname when disconnected
+      if (!status) {
+        setHostname("");
+      }
+
       if (status) {
         navigation.navigate('Home');
       }
@@ -31,6 +36,7 @@ const Login = ({ navigation }) => {
     return () => {
       // Unsubscribe when the component unmounts
       webSocketService.unsubscribeFromConnectionStatus(connectionStatusListener);
+      setHostname(""); // Reset the hostname when navigating back to this component
     };
   }, [navigation]);
 
@@ -55,18 +61,47 @@ const Login = ({ navigation }) => {
     //   return;
     // }
 
+    try {
+      await webSocketService.connect(hostname);
+  
+      // Wait for a short duration to ensure the connection status is updated
+      // This is a simple solution and might need adjustment based on your specific WebSocket implementation
+      await new Promise(resolve => setTimeout(resolve, 500));
+  
+      if (webSocketService.isConnected()) {
+        alert("Connected successfully!");
+        setHostname("");
+      } else {
+        alert("Please enter the correct Hostname.");
+      }
+    } catch (error) {
+      console.error('WebSocket connection error:', error);
+  
+      if (error.message.includes("Failed to construct 'WebSocket': The URL")) {
+        alert("Please enter the correct Hostname.");
+      } else {
+        alert("Failed to connect. Please check the network and try again.");
+      }
+    }
+
     // Make websocket connection
     webSocketService.connect(hostname);
   };
 
+  const onChangeText = (text) => {
+    setHostname(text);
+  };
+
   return (
     <DismissKeyboard>
-      <View style={globalStyles.container}>
+      <KeyboardAvoidingView style={globalStyles.container} behavior="padding" enabled>
         <Text style={globalStyles.titleText}>HACSM</Text>
         <TextInput
           style={globalStyles.textInput}
-          placeholder="ESP32 Hostname"
-          onChangeText={(text) => setHostname(text)} // Set the ip address based on user's input
+          placeholder="ESP32 HOSTNAME"
+          onChangeText={onChangeText}
+          value={hostname}
+          ref={hostnameRef}
         />
         <TouchableOpacity
           style={globalStyles.connectScreenButton}
@@ -75,7 +110,7 @@ const Login = ({ navigation }) => {
           <Text style={globalStyles.loginText}>Connect</Text>
         </TouchableOpacity>
         <StatusBar style="auto" />
-      </View>
+      </KeyboardAvoidingView>
     </DismissKeyboard>
   )
 };

@@ -27,16 +27,19 @@ class WebSocketService {
     this.sensorDataSubscribers = this.sensorDataSubscribers.filter((s) => s !== subscriber);
   }
 
-  connect(hostname) {
-    // Ensure the hostname is not empty or null
-    // if (!hostname) {
-    //   // Show an alert for an invalid hostname
-    //   alert('Invalid hostname. Please enter the correct Hostname.');
-    //   return; // Exit the method to prevent further execution
-    // }
+  onMessageHandler(event) {
+    const message = event.data;
+    console.log('Received WebSocket message:', message);
 
+    // Check if WebSocket is connected before notifying subscribers
+    if (this.isConnected()) {
+      this.sensorDataSubscribers.forEach((subscriber) => subscriber(message));
+    }
+  }
+
+  connect(hostname) {
     if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-      this.socket = new WebSocket(`ws://${hostname}.local:3000`);
+      this.socket = new WebSocket(`ws://${hostname}.local:81`);
 
       this.socket.onopen = () => {
         this.connectionStatusSubscribers.forEach((subscriber) => subscriber(true));
@@ -46,17 +49,26 @@ class WebSocketService {
         this.connectionStatusSubscribers.forEach((subscriber) => subscriber(false));
       };
 
-      this.socket.onmessage = (event) => {
-        const message = event.data;
-        console.log('Received WebSocket message:', message);
-        this.sensorDataSubscribers.forEach((subscriber) => subscriber(message));
-      };
+      this.socket.onmessage = this.onMessageHandler.bind(this);
     }
+  }
+
+  isConnected() {
+    return this.socket && this.socket.readyState === WebSocket.OPEN;
   }
 
   close() {
     if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
       this.socket.close();
+    }
+  }
+
+  sendMessage(message) {
+    if (this.isConnected()) {
+      this.socket.send(message);
+      console.log('Sending message:', message);
+    } else {
+      console.error('WebSocket is not connected. Cannot send message.');
     }
   }
 }

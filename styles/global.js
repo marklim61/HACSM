@@ -8,11 +8,13 @@ export const globalStyles = StyleSheet.create({
       justifyContent: 'center',
     },
     chartContainer: {
-      margin: 50,
+      // margin: 50,
       flex: 1,
       backgroundColor: '#6cd9f5',
       alignItems: 'center',
       justifyContent: 'center',
+      marginRight: 8,
+      marginTop: -60,
     },
     textInput: {
       height: 40,
@@ -24,17 +26,15 @@ export const globalStyles = StyleSheet.create({
     titleText: {
       fontFamily: 'TiltPrism-Regular',
       fontSize: 60,
-      marginBottom: 50
+      margin: 20,
+      marginBottom: 60,
+      padding: 30
     },
     subtitleText:{
       margin: 10
     },
     alarmButton: {
       padding: 10,
-      // marginBottom:20,
-      // marginRight:40,
-      // marginLeft:40,
-      // marginTop:10,
       margin:30,
       paddingTop:10,
       paddingBottom:10,
@@ -51,16 +51,16 @@ export const globalStyles = StyleSheet.create({
       fontSize: 25
   },
   panicButton: {
-    padding:20,
-    marginRight:40,
-    marginLeft:40,
-    marginTop:10,
+    padding: 10,
+    margin:30,
     paddingTop:10,
     paddingBottom:10,
+    paddingRight: 25,
+    paddingLeft: 25,
     backgroundColor:'red',
     borderRadius:10,
     borderWidth: 1,
-    borderColor: '#000405'
+    borderColor: '#000405',
   },
   panicText:{
     color:'black',
@@ -88,8 +88,27 @@ export const globalStyles = StyleSheet.create({
         fontSize: 25
     },
     logOutButton:{
-      color: 'black',
-      marginRight: 10,
-      fontSize: 15
-    }
+      textAlign:'center',
+      paddingLeft : 10,
+      paddingRight : 10,
+      fontSize: 25
+    },
+    disconnectButton: {
+      padding: 10,
+      marginTop: 0,
+      marginBottom: 30,
+      paddingTop:10,
+      paddingBottom:10,
+      paddingRight: 25,
+      paddingLeft: 25,
+      backgroundColor:'red',
+      borderRadius:10,
+      borderWidth: 1,
+      borderColor: '#000405',
+    },
+    buttonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around', // Adjust this as needed
+      marginBottom: 0, // Adjust spacing as needed
+    },
   });
