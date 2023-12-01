@@ -8,8 +8,9 @@ const Home = ({ navigation }) => {
   const [sensorData, setSensorData] = useState({
     Smoke: 0,
     Methane: 0,
-    Alcohol: 0,
     CO: 0,
+    Temperature: 0,
+    Humidity: 0,
   });
 
   useEffect(() => {
@@ -28,8 +29,9 @@ const Home = ({ navigation }) => {
               ...prevState,
               Smoke: parseFloat(parsedMessage.Smoke) || 0,
               Methane: parseFloat(parsedMessage.Methane) || 0,
-              Alcohol: parseFloat(parsedMessage.Alcohol) || 0,
               CO: parseFloat(parsedMessage.CO) || 0,
+              Temperature: parseFloat(parsedMessage.Temperature) || 0,
+              Humidity: parseFloat(parsedMessage.Humidity) || 0,
             }));
           }
         }
@@ -59,7 +61,7 @@ const Home = ({ navigation }) => {
     };
   }, [navigation]);
 
-  const { Smoke, Methane, Alcohol, CO } = sensorData;
+  const { Smoke, Methane, CO, Temperature, Humidity } = sensorData;
 
   return (
     <View style={globalStyles.container}>
@@ -68,15 +70,16 @@ const Home = ({ navigation }) => {
       {/* Bar Chart */}
       <BarChart
         data={{
-          labels: ['Smoke', 'Methane', 'Alcohol', 'CO'],
+          labels: ['Smoke', 'Methane', 'CO', 'Temperature', 'Humidity'],
           datasets: [
             {
-              data: [Smoke, Methane, Alcohol, CO],
+              data: [Smoke, Methane, CO, Temperature, Humidity],
               color: (opacity = 1) => [
                 `rgba(255, 99, 132, ${opacity})`, // Smoke: Red
                 `rgba(75, 192, 192, ${opacity})`, // Methane: Green
-                `rgba(54, 162, 235, ${opacity})`, // Alcohol: Blue
-                `rgba(255, 206, 86, ${opacity})`, // CO: Yellow
+                `rgba(54, 162, 235, ${opacity})`, // CO: Blue
+                `rgba(255, 226, 75, ${opacity})`, // Temperature: Yellow
+                `rgba(255, 206, 86, ${opacity})`, // Humidity: Yellow
               ],
             },
           ],

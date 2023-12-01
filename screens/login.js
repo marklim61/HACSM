@@ -49,8 +49,12 @@ const Login = ({ navigation }) => {
       alert("Please enter a valid IP address");
       return;
     }
-    // Make websocket connection
-    webSocketService.connect(ipAddress);
+    try {
+      // Make websocket connection
+      await webSocketService.connect(ipAddress);
+    } catch (error) {
+      alert("Connection failed. Please check the IP address and try again.");
+    }
   };
 
   return (
