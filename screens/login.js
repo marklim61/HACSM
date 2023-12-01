@@ -12,7 +12,7 @@ const DismissKeyboard = ({ children }) => ( // Needed so we can remove keyboard 
 const Login = ({ navigation }) => {
   // const [socket, setSocket] = useState(null); // State to hold the websocket connection object
   const [connected, setConnected] = useState(false); // State to check if the websocket connection is currently open or closed
-  const [ipAddress, setIpAddress] = useState("");
+  const [hostname, setHostname] = useState("");
 
   useEffect(() => { // Hook is set up to run the callback function whenever conneced and socket values change
     const webSocketService = WebSocketService.getInstance();
@@ -39,22 +39,24 @@ const Login = ({ navigation }) => {
 
     if (connected) { // Check if connected already to avoid continuous connection attempts
       alert("Already connected");
-      navigation.navigate('Home');
       return;
     }
 
-    const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/; // IP address format
-    if (!ipRegex.test(ipAddress)) {
-      // Invalid Ip address format
-      alert("Please enter a valid IP address");
-      return;
+    if (!hostname) {
+      // Show an alert for an invalid hostname
+      alert('Hostname cannot be empty.');
+      return; // Exit the method to prevent further execution
     }
-    try {
-      // Make websocket connection
-      await webSocketService.connect(ipAddress);
-    } catch (error) {
-      alert("Connection failed. Please check the IP address and try again.");
-    }
+
+    // const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/; // IP address format
+    // if (!ipRegex.test(ipAddress)) {
+    //   // Invalid Ip address format
+    //   alert("Please enter a valid IP address");
+    //   return;
+    // }
+
+    // Make websocket connection
+    webSocketService.connect(hostname);
   };
 
   return (
@@ -63,9 +65,8 @@ const Login = ({ navigation }) => {
         <Text style={globalStyles.titleText}>HACSM</Text>
         <TextInput
           style={globalStyles.textInput}
-          placeholder="ESP32 IP Address"
-          keyboardType="numeric"
-          onChangeText={(text) => setIpAddress(text)} // Set the ip address based on user's input
+          placeholder="ESP32 Hostname"
+          onChangeText={(text) => setHostname(text)} // Set the ip address based on user's input
         />
         <TouchableOpacity
           style={globalStyles.connectScreenButton}

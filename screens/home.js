@@ -10,7 +10,7 @@ const Home = ({ navigation }) => {
     Methane: 0,
     CO: 0,
     Temperature: 0,
-    Humidity: 0,
+    Humidity: 0
   });
 
   useEffect(() => {
@@ -78,8 +78,8 @@ const Home = ({ navigation }) => {
                 `rgba(255, 99, 132, ${opacity})`, // Smoke: Red
                 `rgba(75, 192, 192, ${opacity})`, // Methane: Green
                 `rgba(54, 162, 235, ${opacity})`, // CO: Blue
-                `rgba(255, 226, 75, ${opacity})`, // Temperature: Yellow
-                `rgba(255, 206, 86, ${opacity})`, // Humidity: Yellow
+                `rgba(255, 212, 86, ${opacity})`, // Temp: Yellow
+                `rgba(255, 223, 76, ${opacity})`, // Humidity: Yellow
               ],
             },
           ],
