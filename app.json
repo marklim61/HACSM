@@ -10,13 +10,14 @@
     "splash": {
       "image": "./assets/smoke-alarm-loading.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#6cd9f5"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.marklim61.HACSM"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,6 +27,18 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "24b1a8dd-39e9-47a5-80bf-62bcd2e24f08"
+      }
+    },
+    "owner": "marklim61",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/24b1a8dd-39e9-47a5-80bf-62bcd2e24f08"
     }
   }
 }

@@ -49,7 +49,10 @@ const Login = ({ navigation }) => {
     }
 
     try {
-      await webSocketService.connect(hostname);
+      // await webSocketService.connect(hostname);
+
+      // Increase the timeout duration to 5000 milliseconds (5 seconds)
+      await webSocketService.connect(hostname, { timeout: 5000 });
   
       // Wait for a short duration to ensure the connection status is updated
       // This is a simple solution and might need adjustment based on your specific WebSocket implementation

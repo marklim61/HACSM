@@ -91,21 +91,21 @@ const Home = ({ navigation }) => {
               Humidity: parseFloat(parsedMessage.Humidity) || 0,
             }));
 
-            // const handleDangerNotification = (sensorType, threshold, message) => {
-            //   const sensorValue = parseFloat(parsedMessage[sensorType]);
+            const handleDangerNotification = (sensorType, threshold, message) => {
+              const sensorValue = parseFloat(parsedMessage[sensorType]);
 
-            //   if (sensorValue > threshold && !dangerNotificationSent) {
-            //     sendDangerNotification(`${sensorType} level is above ${threshold} ppm!`);
-            //     setDangerNotificationSent(true);
-            //     Alert.alert('Danger Alert!', `${sensorType} level is above threshold value!`);
-            //   } else if (sensorValue <= threshold) {
-            //     setDangerNotificationSent(false);
-            //   }
-            // };
-            // handleDangerNotification('Smoke', 100, 'Smoke');
-            // handleDangerNotification('Methane', 1000, 'Methane');
-            // handleDangerNotification('CO', 50, 'CO');
-            // handleDangerNotification('Temperature', 100, 'Temperature');
+              if (sensorValue > threshold && !dangerNotificationSent) {
+                sendDangerNotification(`${sensorType} level is above ${threshold} ppm!`);
+                setDangerNotificationSent(true);
+                Alert.alert('Danger Alert!', `${sensorType} level is above threshold value!`);
+              } else if (sensorValue <= threshold) {
+                setDangerNotificationSent(false);
+              }
+            };
+            handleDangerNotification('Smoke', 100, 'Smoke');
+            handleDangerNotification('Methane', 1000, 'Methane');
+            handleDangerNotification('CO', 50, 'CO');
+            handleDangerNotification('Temperature', 100, 'Temperature');
           }
         }
       } catch (error) {

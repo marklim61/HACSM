@@ -1,0 +1,18 @@
+{
+    "build": {
+      "releaseChannel": "default",
+      "distribution": "store",
+      "android": {
+        "icon": "./assets/smoke-alarm.png"
+      },
+      "ios": {
+        "icon": "./assets/smoke-alarm.png",
+        "splash": {
+          "image": "./assets/smoke-alarm-loading.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      }
+    }
+  }
+  
