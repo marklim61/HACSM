@@ -47,6 +47,7 @@ const App = () => {
           component={Home}
           options={{
             headerShown: false,
+            gestureEnabled: false, // Avoid swiping back to Login
             // headerRight: () => <Navbar />,
           }}
         />

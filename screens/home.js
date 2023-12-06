@@ -4,6 +4,7 @@ import { globalStyles } from '../styles/global';
 import { BarChart } from 'react-native-chart-kit';
 import WebSocketService from '../services/WebSocketService';
 import { Linking } from 'react-native';
+import * as Notifications from 'expo-notifications'
 
 const Home = ({ navigation }) => {
   const [sensorData, setSensorData] = useState({
@@ -13,6 +14,8 @@ const Home = ({ navigation }) => {
     Temperature: 0,
     Humidity: 0
   });
+
+  const [dangerNotificationSent, setDangerNotificationSent] = useState(false);
 
   const handleAlarmPress = () => {
     const webSocketService = WebSocketService.getInstance();
@@ -46,8 +49,27 @@ const Home = ({ navigation }) => {
     }
   };
 
+  const sendDangerNotification = (message) => {
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Danger Alert!',
+        body: message,
+      },
+      trigger: null, // Send immediately
+    });
+  };
+
   useEffect(() => {
     const webSocketService = WebSocketService.getInstance();
+
+    const getNotificationPermission = async () => {
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status !== 'granted') {
+        await Notifications.requestPermissionsAsync();
+      }
+    };
+
+    getNotificationPermission();
 
     const handleWebSocketMessage = (message) => {
       console.log('Raw WebSocket message:', message);
@@ -66,6 +88,22 @@ const Home = ({ navigation }) => {
               Temperature: parseFloat(parsedMessage.Temperature) || 0,
               Humidity: parseFloat(parsedMessage.Humidity) || 0,
             }));
+
+            // const handleDangerNotification = (sensorType, threshold, message) => {
+            //   const sensorValue = parseFloat(parsedMessage[sensorType]);
+
+            //   if (sensorValue > threshold && !dangerNotificationSent) {
+            //     sendDangerNotification(`${sensorType} level is above ${threshold} ppm!`);
+            //     setDangerNotificationSent(true);
+            //     Alert.alert('Danger Alert!', `${sensorType} level is above threshold value!`);
+            //   } else if (sensorValue <= threshold) {
+            //     setDangerNotificationSent(false);
+            //   }
+            // };
+            // handleDangerNotification('Smoke', 100, 'Smoke');
+            // handleDangerNotification('Methane', 1000, 'Methane');
+            // handleDangerNotification('CO', 50, 'CO');
+            // handleDangerNotification('Temperature', 100, 'Temperature');
           }
         }
       } catch (error) {
@@ -92,7 +130,7 @@ const Home = ({ navigation }) => {
       webSocketService.unsubscribeFromConnectionStatus(handleWebSocketMessage);
       webSocketService.unsubscribeFromSensorData(handleWebSocketMessage);
     };
-  }, [navigation]);
+  }, [navigation, dangerNotificationSent]);
 
   const { Smoke, Methane, CO, Temperature, Humidity } = sensorData;
 
@@ -104,17 +142,10 @@ const Home = ({ navigation }) => {
       <View style={globalStyles.chartContainer}>
         <BarChart
           data={{
-            labels: ['Smoke (ppm)', 'Methane (%)', 'CO (ppm)', 'Temperature (°C)', 'Humidity (%)'],
+            labels: ['Smoke (ppm)', 'Methane (ppm)', 'CO (ppm)', 'Temperature (°F)', 'Humidity (%)'],
             datasets: [
               {
                 data: [Smoke, Methane, CO, Temperature, Humidity],
-                // color: (opacity = 100) => [
-                //   `rgba(60, 60, 60, ${opacity})`,           // Smoke: Dark Gray
-                //   `rgba(210, 210, 210, ${opacity})`,        // Methane: Light Gray (fixed the parenthesis)
-                //   `rgba(120, 120, 120, ${opacity})`,        // CO: Medium Gray (fixed the parenthesis and removed extra parenthesis)
-                //   `rgba(255, 0, 0, ${opacity})`,            // Temp: Red
-                //   `rgba(0, 0, 255, ${opacity})`,            // Humidity: Blue
-                // ],
                 colors: [
                   (opacity = 1) => '#3c3c3c',
                   (opacity = 1) => '#d2d2d2',
@@ -151,12 +182,9 @@ const Home = ({ navigation }) => {
             },
           }}
           style={{
-            // marginVertical: -45,
             borderRadius: 16,
             paddingRight: 8,
             paddingLeft: 12,
-            // marginBottom:-10,
-            // marginTop: 10
           }}
         />
       </View>
@@ -168,7 +196,7 @@ const Home = ({ navigation }) => {
           style={globalStyles.alarmButton}
           onPress={handleAlarmPress}
           underlayColor='#fff'>
-          <Text style={globalStyles.alarmText}>Alarm</Text>
+          <Text style={globalStyles.alarmText}>Alarm Off</Text>
         </TouchableOpacity>
 
         {/* Panic Button */}
@@ -184,7 +212,7 @@ const Home = ({ navigation }) => {
           style={globalStyles.disconnectButton}
           onPress={() => 
             Alert.alert(
-              'Disconnect',
+              'Warning!',
               'Are you sure you want to disconnect?',
               [
                 {
@@ -200,7 +228,7 @@ const Home = ({ navigation }) => {
               { cancelable: false }
             )}
           underlayColor='#fff'>
-          <Text style={globalStyles.logOutButton}>Disconnect</Text>
+          <Text style={globalStyles.disconnectText}>Disconnect</Text>
         </TouchableOpacity>
       <StatusBar style="auto" />
     </View>

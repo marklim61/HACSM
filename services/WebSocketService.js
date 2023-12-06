@@ -38,18 +38,22 @@ class WebSocketService {
   }
 
   connect(hostname) {
-    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-      this.socket = new WebSocket(`ws://${hostname}.local:81`);
-
-      this.socket.onopen = () => {
-        this.connectionStatusSubscribers.forEach((subscriber) => subscriber(true));
-      };
-
-      this.socket.onclose = () => {
-        this.connectionStatusSubscribers.forEach((subscriber) => subscriber(false));
-      };
-
-      this.socket.onmessage = this.onMessageHandler.bind(this);
+    try{
+      if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+        this.socket = new WebSocket(`ws://${hostname}.local:81`);
+  
+        this.socket.onopen = () => {
+          this.connectionStatusSubscribers.forEach((subscriber) => subscriber(true));
+        };
+  
+        this.socket.onclose = () => {
+          this.connectionStatusSubscribers.forEach((subscriber) => subscriber(false));
+        };
+  
+        this.socket.onmessage = this.onMessageHandler.bind(this);
+      }
+    } catch (error) {
+    console.error('WebSocket connection error:', error);
     }
   }
 

@@ -41,14 +41,15 @@ export const globalStyles = StyleSheet.create({
       backgroundColor:'white',
       borderRadius:10,
       borderWidth: 1,
-      borderColor: '#000405'
+      borderColor: 'white'
     },
     alarmText:{
-      color:'red',
+      color:'black',
       textAlign:'center',
       paddingLeft : 10,
       paddingRight : 10,
-      fontSize: 25
+      fontSize: 25,
+      fontWeight: 'bold'
   },
   panicButton: {
     padding: 10,
@@ -60,14 +61,15 @@ export const globalStyles = StyleSheet.create({
     backgroundColor:'red',
     borderRadius:10,
     borderWidth: 1,
-    borderColor: '#000405',
+    borderColor: 'red',
   },
   panicText:{
-    color:'black',
+    color:'white',
     textAlign:'center',
-    paddingLeft : 10,
-    paddingRight : 10,
-    fontSize: 25
+    paddingLeft : 29,
+    paddingRight : 29,
+    fontSize: 25,
+    fontWeight: 'bold'
 },
     connectScreenButton:{
       marginRight:40,
@@ -87,11 +89,13 @@ export const globalStyles = StyleSheet.create({
         paddingRight : 10,
         fontSize: 25
     },
-    logOutButton:{
+    disconnectText:{
+      color: 'white',
       textAlign:'center',
       paddingLeft : 10,
       paddingRight : 10,
-      fontSize: 25
+      fontSize: 25,
+      fontWeight: 'bold'
     },
     disconnectButton: {
       padding: 10,
@@ -101,14 +105,19 @@ export const globalStyles = StyleSheet.create({
       paddingBottom:10,
       paddingRight: 25,
       paddingLeft: 25,
-      backgroundColor:'red',
+      backgroundColor:'black',
       borderRadius:10,
       borderWidth: 1,
-      borderColor: '#000405',
+      borderColor: 'black',
     },
     buttonsContainer: {
       flexDirection: 'row',
       justifyContent: 'space-around', // Adjust this as needed
       marginBottom: 0, // Adjust spacing as needed
     },
+    alertText: {
+      flex: 1,
+      textAlign: 'center',
+      fontWeight: 'bold'
+    }
   });

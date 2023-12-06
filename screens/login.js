@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StatusBar, KeyboardAvoidingView } from "react-native";
+import { Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StatusBar, KeyboardAvoidingView, Alert } from "react-native";
 import { globalStyles } from "../styles/global";
 import WebSocketService from "../services/WebSocketService";
 
@@ -10,7 +10,6 @@ const DismissKeyboard = ({ children }) => ( // Needed so we can remove keyboard 
 )
 
 const Login = ({ navigation }) => {
-  const [connected, setConnected] = useState(false); // State to check if the websocket connection is currently open or closed
   const [hostname, setHostname] = useState("");
   const hostnameRef = useRef(null);
 
@@ -19,7 +18,6 @@ const Login = ({ navigation }) => {
 
     // Add a listener for connection status changes
     const connectionStatusListener = (status) => {
-      setConnected(status);
       // Reset the hostname when disconnected
       if (!status) {
         setHostname("");
@@ -43,23 +41,11 @@ const Login = ({ navigation }) => {
   const connectToServer = async () => {
     const webSocketService = WebSocketService.getInstance();
 
-    if (connected) { // Check if connected already to avoid continuous connection attempts
-      alert("Already connected");
-      return;
-    }
-
     if (!hostname) {
       // Show an alert for an invalid hostname
       alert('Hostname cannot be empty.');
       return; // Exit the method to prevent further execution
     }
-
-    // const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/; // IP address format
-    // if (!ipRegex.test(ipAddress)) {
-    //   // Invalid Ip address format
-    //   alert("Please enter a valid IP address");
-    //   return;
-    // }
 
     try {
       await webSocketService.connect(hostname);
@@ -69,23 +55,23 @@ const Login = ({ navigation }) => {
       await new Promise(resolve => setTimeout(resolve, 500));
   
       if (webSocketService.isConnected()) {
-        alert("Connected successfully!");
+        Alert.alert('Alert', 'Connected successfully!');
         setHostname("");
       } else {
-        alert("Please enter the correct Hostname.");
+        Alert.alert("ERROR", "Please enter the correct Hostname.");
       }
     } catch (error) {
       console.error('WebSocket connection error:', error);
   
       if (error.message.includes("Failed to construct 'WebSocket': The URL")) {
         alert("Please enter the correct Hostname.");
+      } else if (error.message.includes("Connection timeout")) {
+        alert("Connection timed out. Please check the network and try again.");
       } else {
         alert("Failed to connect. Please check the network and try again.");
       }
     }
 
-    // Make websocket connection
-    webSocketService.connect(hostname);
   };
 
   const onChangeText = (text) => {
