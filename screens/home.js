@@ -5,6 +5,8 @@ import { BarChart } from 'react-native-chart-kit';
 import WebSocketService from '../services/WebSocketService';
 import { Linking } from 'react-native';
 import * as Notifications from 'expo-notifications'
+import { MaterialIcons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 
 const Home = ({ navigation }) => {
   const [sensorData, setSensorData] = useState({
@@ -196,39 +198,43 @@ const Home = ({ navigation }) => {
           style={globalStyles.alarmButton}
           onPress={handleAlarmPress}
           underlayColor='#fff'>
-          <Text style={globalStyles.alarmText}>Alarm Off</Text>
+          < MaterialIcons name="alarm-off" size={24} color="white" style={{ fontWeight: 'bold', fontSize: 30 }} />
+          {/* <Text style={globalStyles.alarmText}>Alarm Off</Text> */}
         </TouchableOpacity>
 
-        {/* Panic Button */}
+        {/* Disconnect Button */}
         <TouchableOpacity
+            style={globalStyles.disconnectButton}
+            onPress={() => 
+              Alert.alert(
+                'Warning!',
+                'Are you sure you want to disconnect?',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Disconnect',
+                    style: 'destructive',
+                    onPress: () => handleDisconnect(),
+                  },
+                ],
+                { cancelable: false }
+              )}
+            underlayColor='#fff'>
+            < AntDesign name="logout" size={24} color="white" style={{ fontWeight: 'bold', fontSize: 30 }} />
+            {/* <Text style={globalStyles.disconnectText}>Disconnect</Text> */}
+          </TouchableOpacity>
+      </View>
+
+      {/* Panic Button */}
+      <TouchableOpacity
           style={globalStyles.panicButton}
           onPress={handlePanicPress}
           underlayColor='#fff'>
+          
           <Text style={globalStyles.panicText}>911</Text>
-        </TouchableOpacity>
-      </View>
-      {/* Disconnect Button */}
-      <TouchableOpacity
-          style={globalStyles.disconnectButton}
-          onPress={() => 
-            Alert.alert(
-              'Warning!',
-              'Are you sure you want to disconnect?',
-              [
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-                {
-                  text: 'Disconnect',
-                  style: 'destructive',
-                  onPress: () => handleDisconnect(),
-                },
-              ],
-              { cancelable: false }
-            )}
-          underlayColor='#fff'>
-          <Text style={globalStyles.disconnectText}>Disconnect</Text>
         </TouchableOpacity>
       <StatusBar style="auto" />
     </View>

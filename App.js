@@ -2,18 +2,14 @@ import { NavigationContainer } from '@react-navigation/native'; // Needed for ma
 import { createNativeStackNavigator } from '@react-navigation/native-stack' // Needed for for app to transition between screens
 import Home from './screens/home';
 import Login from './screens/login';
-// import Navbar from './screens/navbar';
 import { useFonts } from 'expo-font'; // Needed for loading custom fonts
 import * as SplashScreen from 'expo-splash-screen'  // Needed to notify the user that the app is in the process of loading.
-import { useEffect, useState } from 'react'; // Needed to update DOM
-import WebSocketService from './services/WebSocketService';
+import { useEffect } from 'react'; // Needed to update DOM
 
 const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 const App = () => {
-  const [hostname, setHostname] = useState("");
-
   const [fontsLoaded] = useFonts({  // Load custom fonts
     "Gruppo-Regular": require("./assets/fonts/Gruppo-Regular.ttf"),
     "Monoton-Regular": require("./assets/fonts/Monoton-Regular.ttf"),

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, StatusBar, KeyboardAvoidingView, Alert } from "react-native";
 import { globalStyles } from "../styles/global";
 import WebSocketService from "../services/WebSocketService";
+import { AntDesign } from '@expo/vector-icons'
 
 const DismissKeyboard = ({ children }) => ( // Needed so we can remove keyboard display if we need to by pressing the background
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -18,10 +19,10 @@ const Login = ({ navigation }) => {
 
     // Add a listener for connection status changes
     const connectionStatusListener = (status) => {
-      // Reset the hostname when disconnected
-      if (!status) {
-        setHostname("");
-      }
+      // // Reset the hostname when disconnected
+      // if (!status) {
+      //   setHostname("");
+      // }
 
       if (status) {
         navigation.navigate('Home');
@@ -36,7 +37,7 @@ const Login = ({ navigation }) => {
       webSocketService.unsubscribeFromConnectionStatus(connectionStatusListener);
       setHostname(""); // Reset the hostname when navigating back to this component
     };
-  }, [navigation]);
+  }, [navigation, setHostname]);
 
   const connectToServer = async () => {
     const webSocketService = WebSocketService.getInstance();
@@ -94,6 +95,7 @@ const Login = ({ navigation }) => {
           onPress={connectToServer}
           underlayColor='#fff'>
           <Text style={globalStyles.loginText}>Connect</Text>
+          < AntDesign name="login" size={24} color="white" style={{ fontWeight: 'bold', fontSize: 30, paddingLeft: 45, padding: 10, paddingTop: -10 }} />
         </TouchableOpacity>
         <StatusBar style="auto" />
       </KeyboardAvoidingView>
