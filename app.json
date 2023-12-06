@@ -2,12 +2,13 @@
   "expo": {
     "name": "HACSM",
     "slug": "HACSM",
+    "description": "This app is for Senior Design Project. It receives sensor datas from our smoke alarm we built",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/smoke-alarm.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/smoke-alarm-loading.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
