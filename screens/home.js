@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { StatusBar, View, Text, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import { globalStyles } from '../styles/global';
 import { BarChart } from 'react-native-chart-kit';
 import WebSocketService from '../services/WebSocketService';
@@ -9,6 +9,9 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
 
 const Home = ({ navigation }) => {
+  const { width } = Dimensions.get('window');
+  // console.log(width);
+
   const [sensorData, setSensorData] = useState({
     Smoke: 0,
     Methane: 0,
@@ -17,14 +20,19 @@ const Home = ({ navigation }) => {
     Humidity: 0
   });
 
-  const [dangerNotificationSent, setDangerNotificationSent] = useState(false);
-
+  const [notificationSent, setNotificationSent] = useState({
+    Smoke: false,
+    Methane: false,
+    CO: false,
+    Temperature: false,
+  });
+  
   const handleAlarmPress = () => {
     const webSocketService = WebSocketService.getInstance();
     
     // Define the message you want to send
     const alarmMessage = {
-      type: 'alarm',
+      type: 'Turn off alarm',
       // Add any other relevant information in the message
     };
   
@@ -36,7 +44,6 @@ const Home = ({ navigation }) => {
     // Use Linking to open the browser with the specified URL
     Linking.openURL('https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw5YVJHNEU0eTdYfGRlZmF1bHR8YTJhOWU1OGJhNzNiYTg2YWNkM2MwNmZkYjI3YThhZDU'); // Replace with the actual URL
   };
-  
 
   const handleDisconnect = async () => {
     const webSocketService = WebSocketService.getInstance();
@@ -91,21 +98,45 @@ const Home = ({ navigation }) => {
               Humidity: parseFloat(parsedMessage.Humidity) || 0,
             }));
 
-            const handleDangerNotification = (sensorType, threshold, message) => {
-              const sensorValue = parseFloat(parsedMessage[sensorType]);
+            // Check if Smoke level is above 100 ppm and a notification hasn't been sent recently
+            if (parseFloat(parsedMessage.Smoke) >= 100 && !notificationSent.Smoke) {
+              sendDangerNotification(`Smoke level is above 100 ppm!`);
+              setNotificationSent((prevState) => ({ ...prevState, Smoke: true }));
+              Alert.alert('Danger Alert!', 'Smoke level is above 100 ppm!');
+            } else if (parseFloat(parsedMessage.Smoke) < 100) {
+              // Reset the state when Smoke level goes below the threshold
+              setNotificationSent((prevState) => ({ ...prevState, Smoke: false }));
+            }
 
-              if (sensorValue > threshold && !dangerNotificationSent) {
-                sendDangerNotification(`${sensorType} level is above ${threshold} ppm!`);
-                setDangerNotificationSent(true);
-                Alert.alert('Danger Alert!', `${sensorType} level is above threshold value!`);
-              } else if (sensorValue <= threshold) {
-                setDangerNotificationSent(false);
-              }
-            };
-            handleDangerNotification('Smoke', 100, 'Smoke');
-            handleDangerNotification('Methane', 1000, 'Methane');
-            handleDangerNotification('CO', 50, 'CO');
-            handleDangerNotification('Temperature', 100, 'Temperature');
+            // Check if Methane level is above 1000 ppm and a notification hasn't been sent recently
+            if (parseFloat(parsedMessage.Methane) >= 1000 && !notificationSent.Methane) {
+              sendDangerNotification('Methane level is above 1000 ppm!');
+              setNotificationSent((prevState) => ({ ...prevState, Methane: true }));
+              Alert.alert('Danger Alert!', 'Methane level is above 1000 ppm!');
+            } else if (parseFloat(parsedMessage.Methane) < 1000) {
+              // Reset the state when Methane level goes below the threshold
+              setNotificationSent((prevState) => ({ ...prevState, Methane: false }));
+            }
+
+            // Check if CO level is above 50 ppm and a notification hasn't been sent recently
+            if (parseFloat(parsedMessage.CO) >= 50 && !notificationSent.CO) {
+              sendDangerNotification('CO level is above 50 ppm!');
+              setNotificationSent((prevState) => ({ ...prevState, CO: true }));
+              Alert.alert('Danger Alert!', 'CO level is above 50 ppm!');
+            } else if (parseFloat(parsedMessage.CO) < 50) {
+              // Reset the state when CO level goes below the threshold
+              setNotificationSent((prevState) => ({ ...prevState, CO: false }));
+            }
+
+            // Check if Temperature is above 100°F and a notification hasn't been sent recently
+            if (parseFloat(parsedMessage.Temperature) >= 100 && !notificationSent.Temperature) {
+              sendDangerNotification('Temperature is above 100°F!');
+              setNotificationSent((prevState) => ({ ...prevState, Temperature: true }));
+              Alert.alert('Danger Alert!', 'Temperature is above 100°F!');
+            } else if (parseFloat(parsedMessage.Temperature) < 100) {
+              // Reset the state when Temperature goes below the threshold
+              setNotificationSent((prevState) => ({ ...prevState, Temperature: false }));
+            }
           }
         }
       } catch (error) {
@@ -132,7 +163,7 @@ const Home = ({ navigation }) => {
       webSocketService.unsubscribeFromConnectionStatus(handleWebSocketMessage);
       webSocketService.unsubscribeFromSensorData(handleWebSocketMessage);
     };
-  }, [navigation, dangerNotificationSent]);
+  }, [navigation, notificationSent]);
 
   const { Smoke, Methane, CO, Temperature, Humidity } = sensorData;
 
@@ -158,8 +189,8 @@ const Home = ({ navigation }) => {
               },
             ],
           }}
-          width={390}
-          height={600}
+          width={width - 45}
+          height={width - 70}
           yAxisLabel= ""// Remove y-axis label
           yAxisSuffix=""
           yAxisInterval={1}
@@ -167,8 +198,8 @@ const Home = ({ navigation }) => {
           withHorizontalLabels={false} // hide horizontal labels
           showValuesOnTopOfBars={true} // Display data values on top of bars
           showBarTops={false}
-          verticalLabelRotation={-90}
-          xLabelsOffset={90}
+          verticalLabelRotation={0}
+          xLabelsOffset={0}
           withCustomBarColorFromData={true}
           flatColor={true}
           chartConfig={{
@@ -185,8 +216,10 @@ const Home = ({ navigation }) => {
           }}
           style={{
             borderRadius: 16,
-            paddingRight: 8,
-            paddingLeft: 12,
+            paddingRight: 70,
+            paddingTop: 100,
+            marginLeft: 75,
+            marginBottom: 100,
           }}
         />
       </View>

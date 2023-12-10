@@ -1,9 +1,10 @@
 class WebSocketService {
   static instance = null;
-  socket = null;
-  connectionStatusSubscribers = [];
-  sensorDataSubscribers = [];
+  socket = null;  //Websocket connection
+  connectionStatusSubscribers = []; // Subscribers for connection status changes
+  sensorDataSubscribers = []; //Subscribers for sensor data updates
 
+  //Singleton pattern: ensure that only 1 instance of the 'WebSocketService' is created
   static getInstance() {
     if (!WebSocketService.instance) {
       WebSocketService.instance = new WebSocketService();
@@ -27,6 +28,7 @@ class WebSocketService {
     this.sensorDataSubscribers = this.sensorDataSubscribers.filter((s) => s !== subscriber);
   }
 
+  // Handle incoming WebSocket messages
   onMessageHandler(event) {
     const message = event.data;
     console.log('Received WebSocket message:', message);
@@ -37,10 +39,11 @@ class WebSocketService {
     }
   }
 
+  // Establish websocket connection
   connect(hostname) {
     try{
       if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-        this.socket = new WebSocket(`ws://${hostname}.local:81`);
+        this.socket = new WebSocket(`ws://${hostname}.local:81`); // Create a new websocket connection
   
         this.socket.onopen = () => {
           this.connectionStatusSubscribers.forEach((subscriber) => subscriber(true));
@@ -50,6 +53,7 @@ class WebSocketService {
           this.connectionStatusSubscribers.forEach((subscriber) => subscriber(false));
         };
   
+        // Handler for incoming messages
         this.socket.onmessage = this.onMessageHandler.bind(this);
       }
     } catch (error) {
@@ -57,16 +61,19 @@ class WebSocketService {
     }
   }
 
+  // Check if websocket is currently connected
   isConnected() {
     return this.socket && this.socket.readyState === WebSocket.OPEN;
   }
 
+  // Close websocket connection
   close() {
     if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
       this.socket.close();
     }
   }
 
+  // Send a message to our HACSM main unit through websocket
   sendMessage(message) {
     if (this.isConnected()) {
       this.socket.send(message);

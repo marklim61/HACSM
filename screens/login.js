@@ -61,8 +61,9 @@ const Login = ({ navigation }) => {
       if (webSocketService.isConnected()) {
         Alert.alert('Alert', 'Connected successfully!');
         setHostname("");
-      } else {
-        Alert.alert("ERROR", "Please enter the correct Hostname.");
+      } 
+      else {
+        Alert.alert('Alert', 'Connected successfully!');
       }
     } catch (error) {
       console.error('WebSocket connection error:', error);

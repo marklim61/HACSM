@@ -24,7 +24,7 @@ export const globalStyles = StyleSheet.create({
   },
   titleText: {
     fontFamily: 'TiltPrism-Regular',
-    fontSize: 60,
+    fontSize: 80,
     margin: 25,
     marginBottom: 50,
     padding: 40
