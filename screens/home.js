@@ -119,11 +119,12 @@ const Home = ({ navigation }) => {
             }
 
             // Check if CO level is above 50 ppm and a notification hasn't been sent recently
-            if (parseFloat(parsedMessage.CO) >= 50 && !notificationSent.CO) {
-              sendDangerNotification('CO level is above 50 ppm!');
+            // For test purposes, threshold is set at 4ppm
+            if (parseFloat(parsedMessage.CO) >= 4 && !notificationSent.CO) {
+              sendDangerNotification('CO level is above 4 ppm!');
               setNotificationSent((prevState) => ({ ...prevState, CO: true }));
-              Alert.alert('Danger Alert!', 'CO level is above 50 ppm!');
-            } else if (parseFloat(parsedMessage.CO) < 50) {
+              Alert.alert('Danger Alert!', 'CO level is above 4 ppm!');
+            } else if (parseFloat(parsedMessage.CO) < 4) {
               // Reset the state when CO level goes below the threshold
               setNotificationSent((prevState) => ({ ...prevState, CO: false }));
             }
